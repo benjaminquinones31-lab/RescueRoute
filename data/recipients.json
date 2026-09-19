@@ -1,0 +1,10 @@
+[
+    {
+        "recipient_id": "R-1001",
+        "organization_name": "community_shelter",
+        "accepted_food_types": ["prepared_meals", "bread"],
+        "capacity": 50,
+        "location": "Campus",
+        "closing_time": "2026-10-01T20:00:00"
+    }
+]

@@ -1,0 +1,10 @@
+[
+    {
+        "volunteer_id": "V-1001",
+        "vehicle_capacity": 20,
+        "location": "Campus",
+        "available_from": "2026-10-01T13:00:00",
+        "available_until": "2026-10-01T18:00:00",
+        "maximum_pickups": 2
+    }
+]
