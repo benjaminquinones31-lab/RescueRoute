@@ -1,10 +1,42 @@
 [
     {
-        "recipient_id": "R-1001",
-        "organization_name": "community_shelter",
-        "accepted_food_types": ["prepared_meals", "bread"],
-        "capacity": 50,
-        "location": "Campus",
-        "closing_time": "2026-10-01T20:00:00"
+    "recipient_id": "R-1001",
+    "organization_name": "community_shelter",
+    "accepted_food_types": ["prepared_meals", "bread"],
+    "capacity": 50,
+    "location": "Campus",
+    "closing_time": "2026-10-01T20:00:00"
+    },
+    {
+    "recipient_id": "R-1002",
+    "organization_name": "food_bank",
+    "accepted_food_types": ["vegetables", "fruit", "bread"],
+    "capacity": 100,
+    "location": "Downtown",
+    "closing_time": "2026-10-02T19:00:00"
+    },
+    {
+    "recipient_id": "R-1003",
+    "organization_name": "student_food_pantry",
+    "accepted_food_types": ["prepared_meals", "fruit"],
+    "capacity": 40,
+    "location": "North Campus",
+    "closing_time": "2026-10-03T17:00:00"
+    },
+    {
+    "recipient_id": "R-1004",
+    "organization_name": "community_center",
+    "accepted_food_types": ["vegetables", "prepared_meals", "bread"],
+    "capacity": 75,
+    "location": "Westside",
+    "closing_time": "2026-10-04T21:00:00"
+    },
+    {
+    "recipient_id": "R-1005",
+    "organization_name": "homeless_shelter",
+    "accepted_food_types": ["prepared_meals", "fruit", "bread"],
+    "capacity": 60,
+    "location": "East Campus",
+    "closing_time": "2026-10-05T20:00:00"
     }
 ]
