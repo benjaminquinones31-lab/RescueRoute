@@ -35,22 +35,16 @@ def FIFO(d_data, r_data, v_data):
                 donation["quantity"] <= recipient["capacity"]
             )
 
-            location_matches = (
-                donation["pickup_location"] == recipient["location"]
-            )
-
             before_closing = (
                 donation["expiration_time"] <= recipient["closing_time"]
             )
 
-            if (food_matches and enough_capacity and location_matches and before_closing):
+            if (food_matches and enough_capacity and before_closing):
                 recipient_found = recipient
             elif(not food_matches):
                 r_reason = "food_matches"
             elif(not enough_capacity):
                 r_reason = "enough_capacity"
-            elif(not location_matches):
-                r_reason = "location_matches"
             elif(not before_closing):
                 r_reason = "before_closing"
             
@@ -61,10 +55,6 @@ def FIFO(d_data, r_data, v_data):
                 donation["quantity"] <= volunteer["vehicle_capacity"]
             )
 
-            location_matches = (
-                donation["pickup_location"] == volunteer["location"]
-            )
-
             available_when_ready = (
                 volunteer["available_from"] <= donation["ready_time"]
             )
@@ -73,12 +63,10 @@ def FIFO(d_data, r_data, v_data):
                 volunteer["available_until"] >= donation["expiration_time"]
             )
 
-            if (enough_vehicle_capacity and location_matches and available_when_ready and available_before_expiration):
+            if (enough_vehicle_capacity and available_when_ready and available_before_expiration):
                 volunteer_found = volunteer
             elif(not enough_vehicle_capacity):
                 v_reason = "enough_vehicle_capacity"
-            elif(not location_matches):
-                v_reason = "location_matches"
             elif(not available_when_ready):
                 v_reason = "available_when_ready"
             elif(not available_before_expiration):
@@ -86,7 +74,7 @@ def FIFO(d_data, r_data, v_data):
 
         # If both were found, record the match
         if recipient_found and volunteer_found:
-            food_quantity_rescued = (donation["quantity"])
+            food_quantity_rescued += (donation["quantity"])
             matches.append({
                 "donation_id": donation["donation_id"],
                 "recipient_id": recipient_found["recipient_id"],
@@ -111,6 +99,6 @@ def FIFO(d_data, r_data, v_data):
     
     print("Unmatched:", len(unmatched))
     for donation_id in unmatched:
-        print(donation_id["donation_id"], "was not assigned because the recipient did not have", r_reason, "and the volunteer did not have", v_reason)
+        print(donation_id["donation_id"], "was not assigned because no recipient had", r_reason, "and no volunteer had", v_reason)
 
 FIFO(donations_data, recipients_data, volunteers_data)
