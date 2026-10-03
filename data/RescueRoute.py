@@ -2,15 +2,15 @@
 import json
 
 #Read Donations File
-with open("donations.json", "r") as file:
+with open("data/donations.json", "r") as file:
     donations_data = json.load(file)
 
 #Read Recipients File
-with open("recipients.json", "r") as file:
+with open("data/recipients.json", "r") as file:
     recipients_data = json.load(file)
 
 #Read Volunteers File
-with open("volunteers.json", "r") as file:
+with open("data/volunteers.json", "r") as file:
     volunteers_data = json.load(file)
 
 #FIFO Baseline Algorithm
