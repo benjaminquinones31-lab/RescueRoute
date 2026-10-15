@@ -38,5 +38,13 @@
     "capacity": 60,
     "location": "East Campus",
     "closing_time": "2026-10-05T20:00:00"
+    },
+    {
+    "recipient_id": "R-1006",
+    "organization_name": "Campus Food Rescue Center",
+    "accepted_food_types": ["prepared_meals", "bread"],
+    "capacity": 100,
+    "location": "Campus",
+    "closing_time": "2026-10-01T20:00:00"
     }
 ]
