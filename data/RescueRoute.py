@@ -1,7 +1,5 @@
 #Rescue Route - Surplus Food Matching & Pickup Planner
 import json
-from datetime import datetime
-from math import ceil
 
 #Read Donations File
 with open("data/donations.json", "r") as file:
@@ -24,20 +22,21 @@ def FIFO(d_data, r_data, v_data):
     food_quantity_at_risk = 0
 
     # Track remaining recipient capacity and volunteer pickups
-    recipient_used = {r["recipient_id"]: 0 for r in r_data}
+    recipient_used = {}
+    for recipient in r_data:
+        recipient_used[recipient["recipient_id"]] = 0
 
-    volunteer_pickups = {v["volunteer_id"]: 0 for v in v_data}
-
-    # Current time, used to identify expired donations
-    now = datetime.now()
+    volunteer_pickups = {}
+    for volunteer in v_data:
+        volunteer_pickups[volunteer["volunteer_id"]] = 0
 
     # Process donations in arrival order
     for donation in d_data:
         recipient_found = None
         volunteer_found = None
 
-        r_reason = ""
-        v_reason = ""
+        r_reason = []
+        v_reason = []
 
         # Find first feasible recipient
         for recipient in r_data:
@@ -54,11 +53,11 @@ def FIFO(d_data, r_data, v_data):
                 break
                 
             if(not food_matches):
-                r_reason = "food matches"
+                r_reason.append("food matches")
             if(not enough_capacity):
-                r_reason = "enough capacity"
+                r_reason.append("enough capacity")
             if(not before_closing):
-                r_reason = "before closing"
+                r_reason.append("before closing")
             
         # Find first feasible volunteer
         for volunteer in v_data:
@@ -75,13 +74,13 @@ def FIFO(d_data, r_data, v_data):
                 volunteer_found = volunteer
                 break
             if(not enough_vehicle_capacity):
-                v_reason = "enough vehicle capacity"
+                v_reason.append("enough vehicle capacity")
             if(not available_when_ready):
-                v_reason = "available when ready"
+                v_reason.append("available when ready")
             if(not available_before_expiration):
-                v_reason = "available before expiration"
+                v_reason.append("available before expiration")
             if(not has_pickup_space):
-                v_reason = "has pickup space"
+                v_reason.append("has pickup space")
 
         # If both were found, record the match
         if recipient_found and volunteer_found:
@@ -95,7 +94,10 @@ def FIFO(d_data, r_data, v_data):
             matches.append({
                 "donation_id": donation["donation_id"],
                 "recipient_id": recipient_found["recipient_id"],
-                "volunteer_id": volunteer_found["volunteer_id"]
+                "volunteer_id": volunteer_found["volunteer_id"],
+                "scheduled_time": donation["ready_time"],
+                "reason": "Recipient and Volunteer found",
+                "status": "ready"
             })
 
         # Otherwise, record the unmatched donation ID
@@ -106,7 +108,7 @@ def FIFO(d_data, r_data, v_data):
 
             food_quantity_at_risk += donation["quantity"]
 
-    #Output
+    # Output Calculations
     total_recipient_capacity = sum(recipient["capacity"] for recipient in r_data)
     total_volunteer_capacity = sum(volunteer["vehicle_capacity"] for volunteer in v_data)
 
@@ -120,6 +122,7 @@ def FIFO(d_data, r_data, v_data):
     else:
         volunteer_utilization = 0
 
+    # Calculate the percentage of urgent donations assigned
     urgent_total = 0
 
     earliest_expiration = min(donation["expiration_time"] for donation in d_data)
@@ -128,12 +131,12 @@ def FIFO(d_data, r_data, v_data):
         if donation["expiration_time"] == earliest_expiration:
             urgent_total += 1
     
-    # Calculate the percentage of urgent donations assigned
     if urgent_total > 0:
         urgent_rescue_rate = (urgent_total / len(matches)) * 100
     else:
         urgent_rescue_rate = 0
     
+    # Output
     print("--- Rescue Route ---\n")
 
     print("Total Donation records processed:", len(matches) + len(unmatched))
@@ -149,12 +152,14 @@ def FIFO(d_data, r_data, v_data):
         print(match["donation_id"], "was assigned to recipient", match["recipient_id"], "with volunteer", match["volunteer_id"], 
               "because the recipient's food matched and had enough capacity and was before closing and the " \
               "volunteer had enough vehicle capacity and was available when ready and was available before expiration and has pickup space")
-    
+
+    i = 0
     print("Unmatched:", len(unmatched))
     for donation_id in unmatched:
-        print(donation_id["donation_id"], "was not assigned because no recipient was", r_reason, "and no volunteer was", v_reason)
+        print(donation_id["donation_id"], "could not be assigned because no remaining recipient had", r_reason[i], "and no remaining volunteer was", v_reason[i])
+        i += 1
 
-    assignment = matches + unmatched
+    assignment = matches
 
     with open("data/assignment.json", "w") as file:
         json.dump(assignment, file)
